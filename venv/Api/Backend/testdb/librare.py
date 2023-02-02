@@ -9,6 +9,10 @@ from array import *
 from datetime import date
 from .auth import get_cookie, return_response
 
+import csv
+import io
+from django.http import FileResponse
+
 
 
 # Create your views here.
@@ -61,13 +65,42 @@ def Librare(request):
                     return return_response("Record deleted.", cookie, user_name)
                 else:
                     return return_response("No such record", cookie, user_name)
+                
             elif request.method == 'EDIT_LIST_OF_FAVORITE':
                 user.list_of_favorite_books = [str(i) for i in parsed_data["list_of_favorite_books"].split(",")]
                 user.save()
                 return HttpResponse("Succesfully edited!")
+            
+            elif request.method == 'CSV_LIB':
+                try:
+                    data = Book.objects.values()
+                    if not data.__len__() == 0:
+                        
+                        with open('Api/Backend/Template/table.csv', 'w', newline='', encoding='UTF-8') as csvfile:
+                            writer = csv.writer(csvfile, delimiter=' '
+                                                    , quoting=csv.QUOTE_MINIMAL)
+                            fieldnames = ['Название','Автор',"Жанр","Дата написания"]
+                            writer = csv.DictWriter(csvfile, fieldnames=fieldnames,quotechar=';') 
+                            writer.writeheader()
+                            for record in data:
+                                book_data = {}
+                                book_data["Название"]=record["name"]
+                                book_data["Автор"] = " ".join([Author.objects.get(id=int(i)).get_username() for i in record["id_author"]])
+                                book_data["Жанр"] = " ".join([Genre.objects.get(id=int(i)).get_username() for i in record["id_genre"]])
+                                book_data["Дата написания"] = str(record["date_of_issue"])
+                                writer.writerow(book_data)
+                            return FileResponse(open('Api/Backend/Template/table.csv','rb'))
+                    else: 
+                        return HttpResponse("Empty table.")
+                except Exception as error:
+                    return HttpResponse(error)
+                finally:
+                    if csvfile:
+                        csvfile.close()
             else:
                 return return_response("This methon is not allowed for you.", cookie, user_name) 
             
+
 
                        
         else:

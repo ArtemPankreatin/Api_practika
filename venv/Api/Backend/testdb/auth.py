@@ -11,7 +11,8 @@ from .models import User
 from .forms import UserModel
 from django.db.utils import IntegrityError
 
-
+def m():
+    print("pass")
 def return_response(massage, cookie, user_name):
     response = HttpResponse(massage)
     response.set_cookie(key='token', value=cookie, httponly=True, expires=datetime.today() + timedelta(days=365))
