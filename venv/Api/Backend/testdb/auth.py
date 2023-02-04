@@ -11,8 +11,6 @@ from .models import User
 from .forms import UserModel
 from django.db.utils import IntegrityError
 
-def m():
-    print("pass")
 def return_response(massage, cookie, user_name):
     response = HttpResponse(massage)
     response.set_cookie(key='token', value=cookie, httponly=True, expires=datetime.today() + timedelta(days=365))
@@ -85,6 +83,8 @@ def Auth(request):
                     return return_response("Successfully edited", user.token, user.email)
                 except Exception as error:
                     return HttpResponse(error)
+            else:
+                return HttpResponse("Method is not allowed for you.")
         else:
             return HttpResponse("Method is not allowed for you.")
     except KeyError:

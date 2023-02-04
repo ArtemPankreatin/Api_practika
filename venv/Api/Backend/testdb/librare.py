@@ -1,16 +1,13 @@
-from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
-from django.http.response import JsonResponse
 from django.http import HttpResponse
 from .forms import *
-from .models import User, Book
+from .models import  Book
 from array import *
 from datetime import date
 from .auth import get_cookie, return_response
 
 import csv
-import io
 from django.http import FileResponse
 
 
@@ -100,9 +97,6 @@ def Librare(request):
             else:
                 return return_response("This methon is not allowed for you.", cookie, user_name) 
             
-
-
-                       
         else:
             return HttpResponse("You have to log in first.") 
             

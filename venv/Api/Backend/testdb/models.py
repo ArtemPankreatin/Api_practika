@@ -13,7 +13,7 @@ class User(AbstractBaseUser):
     email = models.EmailField(max_length=100, unique=True, blank=False)
     password = models.CharField(max_length=100, blank=False)
     role = models.CharField(max_length=5, choices=Role.choices, default=Role.user)
-    list_of_favorite_books = ArrayField(base_field=models.CharField(max_length=6) )
+    list_of_favorite_books = ArrayField(base_field=models.CharField(max_length=6, blank=True) )
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
